@@ -44,6 +44,7 @@ class BunbouguController extends Controller
     {
         $bunruis = Bunrui::all();
         return view('create')
+            ->with('page_id',request()->page_id)
             ->with('bunruis', $bunruis);
     }
 
@@ -69,7 +70,9 @@ class BunbouguController extends Controller
         $bunbougu->shosai = $request->input(["shosai"]);
         $bunbougu->save();
 
-        return redirect()->route('bunbougus.index')->with('success', '文房具を登録しました');
+        return redirect()->route('bunbougus.index')
+            ->with('page_id',request()->page_id)
+            ->with('success', '文房具を登録しました');
     }
 
     /**
@@ -96,6 +99,7 @@ class BunbouguController extends Controller
     {
         $bunruis = Bunrui::all();
         return view('edit', compact('bunbougu'))
+            ->with('page_id',request()->page_id)
             ->with('bunruis', $bunruis);
     }
 
@@ -122,7 +126,9 @@ class BunbouguController extends Controller
         // $bunbougu->user_id = Auth::user()->id;
         $bunbougu->save();
         
-        return redirect()->route('bunbougus.index')->with('success','文房具を更新しました');
+        return redirect()->route('bunbougus.index')
+            ->with('page_id',request()->page_id)
+            ->with('success','文房具を更新しました');
     }
 
     /**
