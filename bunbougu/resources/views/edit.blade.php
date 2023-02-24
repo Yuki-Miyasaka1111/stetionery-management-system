@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div class="col-12 mb-2 mt-2">
-                    <button type="submit" class="btn btn-primary w-100">変更</button>
+                <button type="submit" class="btn btn-primary w-100">変更</button>
             </div>
         </div>      
     </form>
