@@ -7,6 +7,7 @@ use App\Models\Bunrui;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class BunbouguController extends Controller
 {
@@ -23,18 +24,30 @@ class BunbouguController extends Controller
                 'b.name',
                 'b.kakaku',
                 'b.shosai',
+                'b.user_id',
+                'b.name as user_name',
                 'r.str as bunrui',
             ])
             ->from('bunbougus as b')
             ->join('bunruis as r', function($join) {
                 $join->on('b.bunrui', '=', 'r.id');
             })
+            ->join('users as u', function($join) {
+                $join->on('b.user_id', '=', 'u.id');
+            })
             ->orderBy('b.id', 'DESC')
             ->paginate(5);
 
-        return view('index',compact('bunbougus'))
-            ->with('page_id',request()->page)
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+        if(isset(Auth::user()->name)){
+            return view('index',compact('bunbougus'))
+                ->with('user_name', Auth::user()->name)
+                ->with('page_id',request()->page)
+                ->with('i', (request()->input('page', 1) - 1) * 5);
+        }else{
+            return view('index',compact('bunbougus'))
+                ->with('page_id',request()->page)
+                ->with('i', (request()->input('page', 1) - 1) * 5);
+        }
     }
 
     /**
@@ -68,6 +81,8 @@ class BunbouguController extends Controller
         $bunbougu->kakaku = $request->input(["kakaku"]);
         $bunbougu->bunrui = $request->input(["bunrui"]);
         $bunbougu->shosai = $request->input(["shosai"]);
+        $bunbougu->user_id = Auth::User()->id;
+        $bunbougu->updated_at=date("Y-m-d H:i:s");
         $bunbougu->save();
 
         return redirect()->route('bunbougus.index')
@@ -123,7 +138,8 @@ class BunbouguController extends Controller
         $bunbougu->kakaku = $request->input(["kakaku"]);
         $bunbougu->bunrui = $request->input(["bunrui"]);
         $bunbougu->shosai = $request->input(["shosai"]);
-        // $bunbougu->user_id = Auth::user()->id;
+        $bunbougu->user_id = Auth::user()->id;
+        $bunbougu->updated_at=date("Y-m-d H:i:s");
         $bunbougu->save();
         
         return redirect()->route('bunbougus.index')
